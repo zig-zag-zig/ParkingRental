@@ -1,6 +1,7 @@
 package hiof.parking.service.interfaces;
 
-import hiof.parking.model.*;
+import hiof.parking.model.Location;
+import hiof.parking.model.Parkinglot;
 
 import java.util.List;
 

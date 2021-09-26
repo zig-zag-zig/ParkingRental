@@ -2,7 +2,10 @@ package hiof.parking.service;
 
 import hiof.parking.helpers.DateCheckerHelper;
 import hiof.parking.model.*;
-import hiof.parking.repository.*;
+import hiof.parking.repository.BookingRepo;
+import hiof.parking.repository.ParkinglotRepo;
+import hiof.parking.repository.ParkingspotRepo;
+import hiof.parking.repository.UserRepo;
 import hiof.parking.service.interfaces.IBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +13,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.SortedMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static hiof.parking.helpers.DateCheckerHelper.*;

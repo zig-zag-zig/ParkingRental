@@ -1,7 +1,6 @@
 package hiof.parking.helpers;
 
 import hiof.parking.model.ROLE;
-import hiof.parking.model.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 

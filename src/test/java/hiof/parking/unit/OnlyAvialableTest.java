@@ -6,7 +6,6 @@ import hiof.parking.model.Parkingspot;
 import hiof.parking.model.TYPE;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;

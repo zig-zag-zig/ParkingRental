@@ -1,15 +1,14 @@
 package hiof.parking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.ManyToAny;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.*;
-import java.util.Map;
 import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 @NoArgsConstructor

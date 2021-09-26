@@ -5,7 +5,6 @@ import hiof.parking.model.Parkingspot;
 import hiof.parking.model.TYPE;
 
 import java.io.File;
-import java.text.ParseException;
 import java.util.List;
 
 public interface IBookingService {

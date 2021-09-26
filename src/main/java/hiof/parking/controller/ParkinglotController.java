@@ -3,19 +3,19 @@ package hiof.parking.controller;
 import hiof.parking.model.Location;
 import hiof.parking.model.Parkinglot;
 import hiof.parking.model.ROLE;
-import hiof.parking.service.interfaces.*;
+import hiof.parking.service.interfaces.IDeletionServiceLot;
+import hiof.parking.service.interfaces.IParkinglotService;
+import hiof.parking.service.interfaces.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
 import java.util.List;
 
-import static hiof.parking.helpers.AuthorizationHelper.*;
+import static hiof.parking.helpers.AuthorizationHelper.currentUserOrAdmin;
+import static hiof.parking.helpers.AuthorizationHelper.getCurrentUserInfo;
 
 @RestController
 @RequestMapping("api/parkinglot")

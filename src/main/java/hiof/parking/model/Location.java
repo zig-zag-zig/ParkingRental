@@ -1,7 +1,6 @@
 package hiof.parking.model;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

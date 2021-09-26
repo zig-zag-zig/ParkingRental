@@ -1,6 +1,7 @@
 package hiof.parking.service.interfaces;
 
 import hiof.parking.model.User;
+
 import java.util.List;
 
 public interface IUserService {

@@ -4,10 +4,6 @@ import hiof.parking.model.Parkinglot;
 import hiof.parking.model.Parkingspot;
 
 import java.util.Date;
-import java.util.SortedMap;
-import java.util.concurrent.ConcurrentSkipListMap;
-
-import static hiof.parking.helpers.DateCheckerHelper.dateFormat;
 
 public class LotAndSpotHelper {
     public static long getScheduleSizeOfSpotsInLot(Parkinglot parkinglot) {

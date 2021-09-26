@@ -11,15 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
 import java.io.File;
-import java.util.Collection;
 import java.util.List;
-import static hiof.parking.helpers.AuthorizationHelper.*;
+
+import static hiof.parking.helpers.AuthorizationHelper.currentUserOrParkinglotOwnerOrAdmin;
+import static hiof.parking.helpers.AuthorizationHelper.getCurrentUserInfo;
 
 @RestController
 @RequestMapping("api/booking")
@@ -115,7 +114,7 @@ public class BookingController {
 
             var allBookings = getAllBookings(username, userInfo[0], userInfo[1]);
 
-            return new ResponseEntity<>(allBookings, HttpStatus.OK);
+            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }

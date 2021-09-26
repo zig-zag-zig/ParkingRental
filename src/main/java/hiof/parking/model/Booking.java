@@ -1,10 +1,10 @@
 package hiof.parking.model;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
-import java.util.*;
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter

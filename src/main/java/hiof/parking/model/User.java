@@ -2,8 +2,8 @@ package hiof.parking.model;
 
 import lombok.*;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.CascadeType;
+
 import javax.persistence.*;
 
 @NoArgsConstructor

@@ -1,5 +1,7 @@
 package hiof.parking.service;
-import hiof.parking.model.*;
+
+import hiof.parking.model.Location;
+import hiof.parking.model.Parkinglot;
 import hiof.parking.repository.ParkinglotRepo;
 import hiof.parking.repository.UserRepo;
 import hiof.parking.service.interfaces.IParkinglotService;
