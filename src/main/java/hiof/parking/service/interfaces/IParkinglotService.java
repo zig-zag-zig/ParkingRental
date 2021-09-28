@@ -16,5 +16,5 @@ public interface IParkinglotService {
 
     Parkinglot updateParkinglot(long parkinglotid, String city, String address, int number, int zipcode, String area, String username);
 
-    void expandScheduleOfParkingspots(long lotId, long hoursToExpandBy) throws Exception;
+    void expandScheduleOfParkingspots(long lotId, int daysToExpandBy) throws Exception;
 }

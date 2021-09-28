@@ -29,7 +29,7 @@ public class TestFactory {
     public Date bkdatePlusThreeHours = DateCheckerHelper.addHoursToAnyTime(new Date(), 3);
 
     public void user() throws Exception {
-        user = this.userService.createUser("ax", "a", "a", "First", "Usah", "Home", "ff", 2, 1001, "dd");
+        user = this.userService.createUser("x", "a", "a", "First", "Usah", "Home", "ff", 2, 1001, "dd");
     }
 
     public void parkinglot() throws Exception {

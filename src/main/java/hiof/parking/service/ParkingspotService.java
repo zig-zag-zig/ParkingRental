@@ -30,7 +30,7 @@ public class ParkingspotService implements IParkingspotService {
 
         var lot = parkinglotRepo.getById(lotId);
 
-        createScheduleForNewSpot(lot, spot, new Date());
+        createScheduleForNewSpot(lot, spot);
         spot.setParkinglotId(lotId);
         var createdSpot = parkingspotRepo.save(spot);
         lot.getSpots().add(createdSpot);
