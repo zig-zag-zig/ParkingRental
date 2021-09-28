@@ -12,7 +12,9 @@ public interface IParkinglotService {
 
     List<Parkinglot> getAllParkinglots();
 
-    void updateParkinglot(long parkinglotid, String city, String address, int number, int zipcode, String area, String username);
+    List<Parkinglot> getAllParkinglotsOfAUser(String username);
+
+    Parkinglot updateParkinglot(long parkinglotid, String city, String address, int number, int zipcode, String area, String username);
 
     void expandScheduleOfParkingspots(long lotId, long hoursToExpandBy) throws Exception;
 }

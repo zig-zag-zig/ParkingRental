@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static hiof.parking.helpers.AuthorizationHelper.currentUserOrParkinglotOwnerOrAdmin;
 import static hiof.parking.helpers.AuthorizationHelper.getCurrentUserInfo;
+import static hiof.parking.helpers.ExceptionThrowerHelper.throwCorrectException;
 
 @RestController
 @RequestMapping("api/booking")
@@ -37,13 +39,12 @@ public class BookingController {
     @GetMapping("/onlyavailable/{parkinglotId}/{type}/{date}/{hours}")
     public ResponseEntity<List<Parkingspot>> getOnlyAvailable(@PathVariable long parkinglotId, @PathVariable String type, @PathVariable String date, @PathVariable int hours) {
         try {
-            String typeOfSpot = "";
             type = type.trim();
             List<Parkingspot> onlyAvailable = null;
             if (type.equalsIgnoreCase("All types"))
                 onlyAvailable = bookingService.getOnlyAvailableParkingspotsInAParkinglot(parkinglotId, date, hours, null);
             else {
-                var typeParsedToEnum = TYPE.valueOf(type.trim());
+                var typeParsedToEnum = TYPE.valueOf(type);
                 onlyAvailable = bookingService.getOnlyAvailableParkingspotsInAParkinglot(parkinglotId, date, hours, typeParsedToEnum);
             }
             return new ResponseEntity<>(onlyAvailable, HttpStatus.FOUND);
@@ -71,48 +72,55 @@ public class BookingController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         }
-
     }
 
     @GetMapping("/get/{bookingId}")
-    public ResponseEntity<Booking> get(@PathVariable String bookingId) {
+    public ResponseEntity<Booking> get(@PathVariable long bookingId) throws Exception {
         try {
-            var userInfo = getCurrentUserInfo();
-            var idOfCurrentUser = userService.getByUsername(userInfo[0]).getId();
-            var bookingIdParsed = Long.parseLong(bookingId.trim());
-            var booking = bookingService.getBookingById(bookingIdParsed);
-            if (currentUserOrParkinglotOwnerOrAdmin(userInfo[1], idOfCurrentUser, booking.getParkinglot().getOwner().getId(), booking.getUser().getId())) {
+            if (isAllowed(bookingId)) {
+                var booking = bookingService.getBookingById(bookingId);
                 return new ResponseEntity<>(booking, HttpStatus.FOUND);
             } else
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not Authorized!");
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not Authorized!");
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+            throw throwCorrectException(e);
         }
     }
 
     @DeleteMapping("/delete/{bookingId}")
-    public ResponseEntity<Void> delete(@PathVariable String bookingId) {
+    public ResponseEntity<Void> delete(@PathVariable long bookingId) throws Exception {
         try {
-            var userInfo = getCurrentUserInfo();
-            var idOfCurrentUser = userService.getByUsername(userInfo[0]).getId();
-            var bookingIdParsed = Long.parseLong(bookingId.trim());
-            var booking = bookingService.getBookingById(bookingIdParsed);
-            if (currentUserOrParkinglotOwnerOrAdmin(userInfo[0], idOfCurrentUser, booking.getParkinglot().getOwner().getId(), booking.getUser().getId())) {
-                deletionService.deleteBooking(bookingIdParsed);
-                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-            } else
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not Authorized!");
+            if (isAllowed(bookingId)) {
+                if (deletionService.deleteBooking(bookingId))
+                        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+                else
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error deleting the booking");
+            } else {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not Authorized!");
+            }
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+            throw throwCorrectException(e);
         }
     }
 
-    @GetMapping(value = {"/all", "/all/{username}"})
-    public ResponseEntity<List<Booking>> getAllOfUser(@PathVariable(required = false) String username) {
+    private boolean isAllowed(long bookingId) {
+        var userInfo = getCurrentUserInfo();
+        var idOfCurrentUser = userService.getByUsername(userInfo[0]).getId();
+        var booking = bookingService.getBookingById(bookingId);
+        return currentUserOrParkinglotOwnerOrAdmin(userInfo[1], idOfCurrentUser, booking.getParkinglot().getOwner().getId(), booking.getUser().getId());
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Booking>> getAll() {
         try {
             var userInfo = getCurrentUserInfo();
 
-            var allBookings = getAllBookings(username, userInfo[0], userInfo[1]);
+            List<Booking> allBookings;
+
+            if (userInfo[1].equalsIgnoreCase(ROLE.Administrator.toString()))
+                allBookings = bookingService.getAllBookings();
+            else
+                allBookings = bookingService.getAllBookingsOfAUser(userInfo[0]);
 
             return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
         } catch (Exception e) {
@@ -120,15 +128,14 @@ public class BookingController {
         }
     }
 
-    private List<Booking> getAllBookings(String username, String usernameOfCurrentUser, String roleOfUser) {
-        if (roleOfUser.equalsIgnoreCase(ROLE.Administrator.toString())) {
-            if (username != null) {
-                return bookingService.getAllBookingsOfAUser(username.trim());
-            } else {
-                return bookingService.getAllBookings();
-            }
-        } else {
-            return bookingService.getAllBookingsOfAUser(usernameOfCurrentUser);
+    @GetMapping("/all/{username}")
+    @PreAuthorize("hasAuthority('Administrator') or #username.trim().equalsIgnoreCase(authentication.name)")
+    public ResponseEntity<List<Booking>> getAllOfAUser(@PathVariable String username) {
+        try {
+            var allBookings = bookingService.getAllBookingsOfAUser(username.trim());
+            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
@@ -137,29 +144,18 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getAllOnOwnedSpots(@PathVariable String username) {
         try {
             var allBookings = bookingService.getAllBookingsOfOwnedSpots(username.trim());
-            return new ResponseEntity<>(allBookings, HttpStatus.OK);
+            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
 
-    @GetMapping("/bookingsOnOwnedSpotsCurrent/")
+    @GetMapping("/bookingsOnOwnedSpots")
     public ResponseEntity<List<Booking>> getAllOnOwnedSpotsCurrentUser() {
         try {
             var userInfo = getCurrentUserInfo();
             var allBookings = bookingService.getAllBookingsOfOwnedSpots(userInfo[0]);
-            return new ResponseEntity<>(allBookings, HttpStatus.OK);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
-        }
-    }
-
-    @PostMapping("/write")
-    @PreAuthorize("hasAuthority('Administrator')")
-    public ResponseEntity<Void> writeBookingsToCSV() {
-        try {
-            bookingService.writeBookingsToCsv(new File("bookings.csv"));
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }

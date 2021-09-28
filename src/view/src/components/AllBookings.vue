@@ -1,9 +1,5 @@
 <template>
   <div>
-    <span v-if="isAdmin === true">
-      <button @click="writeToCsv">"Write all to CSV" ></button>
-    </span>
-
     <div v-for="booking in bookings">
       <div class="flex-container">
         <a :href="`/bookings/${booking.id}`">
@@ -77,9 +73,6 @@ export default {
               this.fetchAllTheBookings("http://localhost:8080/api/booking/all");
           })
     },
-    writeToCsv() {
-      fetch("https://localhost:8080/api/booking/write");
-    }
   },
   created() {
     this.getAdminStatus();

@@ -36,8 +36,8 @@ public class AuthorizationHelperTest extends TestFactory {
 
     @AfterEach
     void onTeardown() {
-        deletionService.deleteUser(user2.getUsername());
         deletionService.deleteUser(admin.getUsername());
+        deletionService.deleteUser(user2.getUsername());
         deletionService.deleteUser(user3.getUsername());
         deletionService.deleteUser(user4.getUsername());
 

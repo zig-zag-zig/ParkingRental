@@ -44,20 +44,10 @@ public class ParkingspotService implements IParkingspotService {
     }
 
     @Override
-    public List<Parkingspot> getAll() {
-        var allSpots = parkingspotRepo.findAll();
-
-        if (allSpots.size() == 0)
-            throw new IllegalArgumentException("None found!");
-
-        return allSpots;
-    }
-
-    @Override
-    public void updateParkingspot(long spotid, TYPE type, int hourlyPrice) {
+    public Parkingspot updateParkingspot(long spotid, TYPE type, int hourlyPrice) {
         var spot = parkingspotRepo.findById(spotid).orElseThrow(() -> new IllegalArgumentException("Parkingspot not found"));
         spot.setType(type);
         spot.setHourlyPrice(hourlyPrice);
-        parkingspotRepo.save(spot);
+        return parkingspotRepo.save(spot);
     }
 }

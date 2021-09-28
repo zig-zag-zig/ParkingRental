@@ -60,23 +60,25 @@ public class UserService implements IUserService {
         return all;
     }
 
-    public void updateUser(String username, String forename, String surname, String city, String address, int nummber, int zipcode, String area) {
+    public User updateUser(String username, String forename, String surname, String city, String address, int nummber, int zipcode, String area) {
         Location adr = new Location(city, address, nummber, zipcode, area);
         var user= userRepo.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found"));
         user.setFirstname(forename);
         user.setSurname(surname);
         user.setLocation(adr);
-        userRepo.save(user);
+        return userRepo.save(user);
     }
 
-    public void changePassword(String username, String newPass, String newPassConfirmed, String originalPass) throws Exception {
+    public boolean changePassword(String username, String newPass, String newPassConfirmed, String originalPass) throws Exception {
         var user  =  userRepo.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found"));
         if (newPass.equals(newPassConfirmed)) {
             if (bCryptPasswordEncoder.matches(originalPass, user.getPassword())) {
                 newPass = bCryptPasswordEncoder.encode(newPass);
                 user.setPassword(newPass);
                 userRepo.save(user);
+                return true;
             }
+            return false;
         }
         else
             throw new Exception("New passowrd and new password confirmed aren't equal!");

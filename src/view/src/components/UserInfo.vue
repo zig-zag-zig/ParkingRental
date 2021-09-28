@@ -72,7 +72,7 @@ export default {
       if (this.$route.params.username.length > 0) {
         path += `get/${this.$route.params.username}`
       } else {
-        path += "current"
+        path += "get"
       }
 
       fetch(path, {

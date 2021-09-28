@@ -44,7 +44,7 @@ export default {
       if (this.$route.params.username.length > 0) {
         path += `bookingsOnOwnedSpots/${this.$route.params.username}`
       } else {
-        path += "bookingsOnOwnedSpotsCurrent"
+        path += "bookingsOnOwnedSpots"
       }
       fetch(path, {
         credentials: 'include'

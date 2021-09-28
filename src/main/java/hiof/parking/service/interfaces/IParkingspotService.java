@@ -10,7 +10,5 @@ public interface IParkingspotService {
 
     Parkingspot getParkingspotById(long parkingspotid);
 
-    List<Parkingspot> getAll();
-
-    void updateParkingspot(long spotid, TYPE type, int hourlyPrice);
+    Parkingspot updateParkingspot(long spotid, TYPE type, int hourlyPrice);
 }
