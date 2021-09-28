@@ -1,19 +1,21 @@
 <template>
-  <form @submit.prevent="createSpot" method="post">
-    <select id="typeSelect">Type
-      <option>Regular</option>
-      <option>Handicap</option>
-      <option>Truck</option>
-    </select>
-    <p>
-      <label for="hourlyPrice">Hourly Price: </label><br>
-      <input v-model="hourlyPrice" type="number" name="hourlyPrice" min="1" id="hourlyPrice" required="required"
-             oninput="validity.valid||(value='');">
-    </p>
-    <p>
-      <input type="submit" value="Create">
-    </p>
-  </form>
+  <div>
+    <form @submit.prevent="createSpot" method="post">
+      <select id="typeSelect">Type
+        <option>Regular</option>
+        <option>Handicap</option>
+        <option>Truck</option>
+      </select>
+      <p>
+        <label for="hourlyPrice">Hourly Price: </label><br>
+        <input v-model="hourlyPrice" type="number" name="hourlyPrice" min="1" id="hourlyPrice" required="required"
+               oninput="validity.valid||(value='');">
+      </p>
+      <p>
+        <button class="btn" type="submit">Create</button>>
+      </p>
+    </form>
+  </div>
 </template>
 
 <script>

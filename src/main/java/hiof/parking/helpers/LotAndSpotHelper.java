@@ -18,21 +18,19 @@ public class LotAndSpotHelper {
     }
 
     public static void removeOldDatesFromSchedule(Parkinglot parkinglot) {
+        var nowString = DateCheckerHelper.dateFormat.format(new Date());
+
         for (var spot : parkinglot.getSpots()) {
-            for (var entry : spot.getSchedule().entrySet()) {
-                var timeFromSchedule = entry.getKey();
-                var nowString = DateCheckerHelper.dateFormat.format(new Date());
+            var iterator = spot.getSchedule().entrySet().iterator();
+            while (iterator.hasNext()) {
+                var timeFromSchedule = iterator.next().getKey();
                 try {
-                    var now = DateCheckerHelper.dateFormat.parse(nowString);
                     var timeFromScheduleParsed = DateCheckerHelper.dateFormat.parse(timeFromSchedule);
-
+                    var now = DateCheckerHelper.dateFormat.parse(nowString);
                     if (timeFromScheduleParsed.before(now)) {
-                        spot.getSchedule().remove(entry.getKey());
-                    } else
-                        break;
-
-                } catch (Exception ignored) {
-                }
+                        iterator.remove();
+                    }
+                } catch (Exception ignored) {}
             }
         }
     }

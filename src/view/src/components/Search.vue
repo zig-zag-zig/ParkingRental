@@ -1,4 +1,4 @@
-<template id="search">
+<template>
   <div>
     <h2>Find Available</h2>
 
@@ -36,7 +36,7 @@
       </p>
 
       <p>
-        <input type="submit" value="Search">
+        <button class="btn" type="submit">Search</button>
       </p>
     </form>
 
@@ -45,7 +45,7 @@
       <select id="spotSelect"></select>
     </p>
 
-    <button @click="this.book">Book</button>
+    <button class="btn" @click="this.book">Book</button>
 
   </div>
 

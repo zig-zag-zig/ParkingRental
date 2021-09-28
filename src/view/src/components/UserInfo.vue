@@ -3,7 +3,7 @@
     <h1>User Info</h1>
     <span v-if="isAdmin === true">
       <p>
-      <button @click="this.$router.push(`/user/all`)">All Users</button>
+      <button class="btn" @click="this.$router.push(`/user/all`)">All Users</button>
       </p>
     </span>
     <p>
@@ -38,8 +38,9 @@
              oninput="validity.valid||(value='');">
     </p>
 
-    <button @click="updateUser">Update</button>
-    <button @click="deleteUser">Delete</button>
+    <button class="btn" @click="updateUser">Update</button>
+    <br>
+    <button class="btn" @click="deleteUser">Delete</button>
   </div>
 
 </template>

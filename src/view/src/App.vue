@@ -2,49 +2,49 @@
   <div>
     <div class="nav">
       <div class="navbutton" v-if="isLoggedIn === true">
-        <a :href="'http://localhost:8080/#/user/'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/#/user/'">
           <p>User Info</p>
         </a>
       </div>
 
       <div class="navbutton" v-if="isLoggedIn === true">
-        <a :href="'http://localhost:8080/#/'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/#/'">
           <p>All Parkinglots</p>
         </a>
       </div>
 
       <div class="navbutton" v-if="isLoggedIn === true">
-        <a :href="'http://localhost:8080/#/createlot'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/#/createlot'">
           <p>New Parkinglot</p>
         </a>
       </div>
 
       <div class="navbutton" v-if="isLoggedIn === true">
-        <a :href="'http://localhost:8080/#/booking/all'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/#/booking/all'">
           <p>Bookings</p>
         </a>
       </div>
 
       <div class="navbutton" v-if="isLoggedIn === true">
-        <a :href="'http://localhost:8080/#/booking/all/ownedspots'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/#/booking/all/ownedspots'">
           <p>Bookings On Owned Spots</p>
         </a>
       </div>
 
       <div class="navbutton" v-if="isLoggedIn === true">
-        <a :href="'http://localhost:8080/logout'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/logout'">
           <p>Logout</p>
         </a>
       </div>
 
       <div class="navbutton" v-if="isLoggedIn !== true">
-        <a :href="'http://localhost:8080/#/createuser'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/#/createuser'">
           <p>New User</p>
         </a>
       </div>
 
       <div class="navbutton" v-if="isLoggedIn !== true">
-        <a :href="'http://localhost:8080/login'" class="nav-link">
+        <a class="link" :href="'http://localhost:8080/login'">
           <p>Login</p>
         </a>
       </div>
@@ -81,75 +81,21 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 template {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+body {
   margin: 0px;
   padding: 0px;
-  border: 0px;
-}
-.nav {
-  display: flex;
-  background-color: #303030;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-.navbutton {
-  text-align: center;
-  background-color: #D3D3D3;
-  width: 150px;
-  margin: 15px auto;
-  padding: 0px;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-}
-.navbutton a {
+  background-color: black;
   text-decoration: none;
-  color: black;
+  color: darkgray;
 }
-.navbutton:hover {
-  background-color: #C0C0C0
-}
-.wrapper {
-  text-align: center;
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 0px;
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-  width: 100%;
-}
-h1 {
-  padding-top: 15px;
-}
-h2 {
-  margin-bottom: 50px;
-}
-.button {
-  text-align: center;
-  background-color: #D3D3D3;
-  width: 200px;
-  margin: 15px auto;
-  padding: 0px;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-}
-.button a {
-  text-decoration: none;
-  color: black;
-}
-.button:hover {
-  background-color: #C0C0C0
-}
-.smallbutton {
+
+.btn {
   text-align: center;
   background-color: #D3D3D3;
   width: 150px;
@@ -159,103 +105,82 @@ h2 {
   border-radius: 5px;
   font-size: 14px;
 }
-.smallbutton a {
-  text-decoration: none;
-  color: black;
-}
-.smallbutton:hover {
+
+.btn:hover {
   background-color: #C0C0C0
 }
-.grid {
-  margin: auto;
-  display: inline-grid;
-  grid-template-columns: auto auto auto;
-}
-.flex {
-  margin: auto;
-  display: flex;
-  grid-template-columns: auto;
-}
-.user {
-  background-color: #D3D3D3;
-  text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  margin: 15px;
-  width: 200px;
-  height: 230px;
-}
-.user a {
+
+.link {
+  color:inherit;
   text-decoration: none;
+}
+
+.flex-container {
+  display: flex;
+  background-color: dimgrey;
+  text-align: center;
+  flex-direction: column;
+  margin: 2vw auto 2vw auto;
+  width: 40vw;
+  padding: 2vw;
+}
+
+* {
+  text-align: center;
+}
+
+.flex-container:hover{
+  background-color: darkolivegreen;
+}
+
+.flex-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: darkgray;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.navbutton {
+  text-align: center;
   color: black;
 }
-p {
-  line-height: 20px;
-  margin: 0px;
-  padding: 10px;
+
+.navbutton a:hover {
+  color: dodgerblue;
 }
-.user:hover {
-  background-color: #C0C0C0
-}
-.parkinglot {
-  background-color: #D3D3D3;
+
+.linkbutton {
+  background-color: lightsteelblue;
+  color: black;
+  padding: 5px;
   text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  margin: 15px;
-  width: 400px;
-  height: 810px;
+  text-decoration: none;
+  display: inline-block;
 }
-.parkinglotedit {
-  background-color: #D3D3D3;
+
+.linkbutton:hover {
+  background-color: cornflowerblue;
+}
+
+input[type=submit] {
+  border: none;
+  background-color: lightsteelblue;
+  color: black;
+  padding: 5px;
   text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  margin: auto;
-  width: 400px;
-  height: auto;
+  text-decoration: none;
+  cursor: pointer;
 }
-.userlist {
-  background-color: #D3D3D3;
-  text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  margin: 15px;
-  width: 200px;
+
+input[type=submit]:hover {
+  background-color: cornflowerblue;
 }
-.booking {
-  background-color: #D3D3D3;
-  text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  margin: 15px;
-  width: 400px;
-  height: 100%;
-}
-.spot {
-  background-color: #D3D3D3;
-  text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.8);
-  border-radius: 5px;
-  margin: 15px;
-  width: 200px;
-  height: auto;
-}
-.center {
-  display: flex;
-  margin: auto;
-  text-align: center;
-}
-.inputs {
-  display: none;
-}
-#foo:checked + .inputs {
-  display: initial;
-}
-h1{font-family: Arial, Helvetica, sans-serif;}
-h2{font-family: Arial, Helvetica, sans-serif;}
-h3{font-family: Arial, Helvetica, sans-serif;}
-p{font-family: Arial, Helvetica, sans-serif;}
-a{font-family: Arial, Helvetica, sans-serif;}
-select{font-family: Arial, Helvetica, sans-serif;}
-body{margin: 0px; padding: 0px;}
+
 </style>

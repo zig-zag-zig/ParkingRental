@@ -1,5 +1,5 @@
 <template>
-  <div class="create">
+  <div>
     <form @submit.prevent="createUser" method="post">
 
       <p>
@@ -55,7 +55,7 @@
       </p>
 
       <p>
-        <input type="submit" value="Create">
+        <button class="btn" type="submit">Create</button>>
       </p>
 
     </form>

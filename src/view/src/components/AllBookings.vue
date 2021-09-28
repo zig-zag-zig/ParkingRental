@@ -1,34 +1,30 @@
 <template>
-  <div>
+  <div class="flex-wrapper">
     <div v-for="booking in bookings">
       <div class="flex-container">
-        <a :href="`/bookings/${booking.id}`">
-          <div>
-            <p>Booking-ID: {{ booking.id }}</p>
-            <p>Spot-ID: {{ booking.spot.id }} {{ booking.spot.type }} </p>
+        <a class="link" :href="`http://localhost:8080/#/booking/${booking.id}`">
+          <p>Booking-ID: {{ booking.id }}</p>
+          <p>Spot-ID: {{ booking.spot.id }} {{ booking.spot.type }} </p>
 
-            <span style="display:none;">{{ i = 0 }}</span>
+          <span style="display:none;">{{ i = 0 }}</span>
 
-            <p>Bookingdates:
-              <span v-for="dates in booking.dateAndTime">
-                  {{ dates }}<span v-if="i + 1 !== booking.dateAndTime.length">, </span>
-                  <span style="display:none;">{{ i++ }}</span>
-                </span>
-            </p>
+          <p>Bookingdates:
+            <span v-for="dates in booking.dateAndTime">
+                    {{ dates }}<span v-if="i + 1 !== booking.dateAndTime.length">, </span>
+                    <span style="display:none;">{{ i++ }}</span>
+                  </span>
+          </p>
 
-            <p>Parkinglot Location City: {{ booking.parkinglot.location.city }}</p>
-            <p>Address: {{ booking.parkinglot.location.address }}, {{ booking.parkinglot.location.number }}</p>
-            <p>ZipCode And Area: {{ booking.parkinglot.location.zipcode }}, {{ booking.parkinglot.location.area }}</p>
-            <br>
-            <p>Parkinglot Owner Name: {{ booking.parkinglot.owner.firstname }}, {{ booking.parkinglot.owner.surname }}</p>
-            <br>
-            <p>Booker Name: {{ booking.user.firstname }} {{ booking.user.surname }}</p>
-            <p>Price: {{ booking.price }}</p>
-          </div>
+          <p>Parkinglot Location City: {{ booking.parkinglot.location.city }}</p>
+          <p>Address: {{ booking.parkinglot.location.address }}, {{ booking.parkinglot.location.number }}</p>
+          <p>ZipCode And Area: {{ booking.parkinglot.location.zipcode }}, {{ booking.parkinglot.location.area }}</p>
+          <br>
+          <p>Parkinglot Owner Name: {{ booking.parkinglot.owner.firstname }}, {{ booking.parkinglot.owner.surname }}</p>
+          <br>
+          <p>Booker Name: {{ booking.user.firstname }} {{ booking.user.surname }}</p>
+          <p>Price: {{ booking.price }}</p>
+          <button class="btn" @click="this.deleteBooking(booking.id);">Delete</button>
         </a>
-        <p>
-          <button @click="this.deleteBooking(booking.id);">Delete</button>
-        </p>
       </div>
     </div>
   </div>
@@ -59,7 +55,7 @@ export default {
         credentials: 'include'
       }).then(response => response.json())
           .then(data => this.bookings = data)
-          .catch(error => alert('Error:', error));
+          .catch(error => alert('Error fetching bookings!',));
     },
     getAdminStatus() {
       fetch('http://localhost:8080/api/auth/admin', {

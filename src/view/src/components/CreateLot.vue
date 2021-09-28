@@ -30,7 +30,7 @@
       </p>
 
       <p>
-        <input type="submit" value="Create">
+        <button class="btn" type="submit">Create</button>
       </p>
 
     </form>
