@@ -8,6 +8,7 @@ import hiof.parking.service.interfaces.IParkinglotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static hiof.parking.helpers.DateCheckerHelper.dateFormat;
@@ -48,7 +49,25 @@ public class ParkinglotService implements IParkinglotService {
     }
 
     @Override
-    public void updateParkinglot(long parkinglotid, String city, String address, int number, int zipcode, String area, String username) {
+    public List<Parkinglot> getAllParkinglotsOfAUser(String username) {
+        var all = getAllParkinglots();
+
+        var allOfUser = new ArrayList<Parkinglot>();
+
+        for (var lot : all) {
+            if (lot.getOwner().getUsername().equalsIgnoreCase(username)) {
+                allOfUser.add(lot);
+            }
+        }
+
+        if (allOfUser.isEmpty())
+            throw new IllegalArgumentException("None found!");
+
+        return all;
+    }
+
+    @Override
+    public Parkinglot updateParkinglot(long parkinglotid, String city, String address, int number, int zipcode, String area, String username) {
         var lot = parkinglotRepo.getById(parkinglotid);
 
         lot.getLocation().setCity(city);
@@ -60,7 +79,7 @@ public class ParkinglotService implements IParkinglotService {
         var owner =  userRepo.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("Owner not found"));
         lot.setOwner(owner);
 
-        parkinglotRepo.save(lot);
+        return parkinglotRepo.save(lot);
     }
 
     @Override

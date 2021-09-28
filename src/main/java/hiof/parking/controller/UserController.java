@@ -13,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static hiof.parking.helpers.ExceptionThrowerHelper.throwCorrectException;
+
 @RestController
 @RequestMapping("api/user")
 public class UserController {
@@ -47,12 +49,14 @@ public class UserController {
 
     @DeleteMapping("/delete/{username}")
     @PreAuthorize("hasAuthority('Administrator') or #username.trim().equalsIgnoreCase(authentication.name)")
-    public ResponseEntity<Void> delete(@PathVariable String username) {
+    public ResponseEntity<Void> delete(@PathVariable String username) throws Exception {
         try {
-            deletionService.deleteUser(username.trim());
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            if (deletionService.deleteUser(username.trim()))
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            else
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Deletion failed");
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+            throw throwCorrectException(e);
         }
     }
 
@@ -86,7 +90,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/current")
+    @GetMapping("/get")
     public ResponseEntity<User> getCurrentUser() {
         try {
             var usernameOfCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName();

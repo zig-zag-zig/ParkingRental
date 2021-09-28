@@ -11,7 +11,7 @@ public interface IUserService {
 
     List<User> getAllUsers();
 
-    void updateUser(String username, String forename, String surname, String city, String address, int nummber, int zipcode, String area);
+    User updateUser(String username, String forename, String surname, String city, String address, int nummber, int zipcode, String area);
 
-    void changePassword(String username, String newPass, String newPassConfirmed, String originalPass) throws Exception;
+    boolean changePassword(String username, String newPass, String newPassConfirmed, String originalPass) throws Exception;
 }

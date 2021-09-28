@@ -29,7 +29,7 @@ public class DeletionService implements IDeletionService {
     }
 
     @Override
-    public void deleteUser(String username) {
+    public boolean deleteUser(String username) {
         var user =  userRepo.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         deleteBookingsOfDeletedUser(user);
@@ -38,7 +38,12 @@ public class DeletionService implements IDeletionService {
         deleteOwnedParkinglotsOfUserToBeDeleted(user);
 
         //remove the user from the map of all users
-        userRepo.delete(user);
+        try {
+            userRepo.delete(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void deleteBookingsOfDeletedUser(User user) {
@@ -63,12 +68,18 @@ public class DeletionService implements IDeletionService {
     }
 
     @Override
-    public void deleteParkingspot(long spotid) {
+    public boolean deleteParkingspot(long spotid) {
         var spot = parkingspotRepo.findById(spotid).orElseThrow(() -> new IllegalArgumentException("Spot not found"));
 
         deleteBookingsRelatedToSpotsToBeDeleted(spot.getId());
         removeParkingspotFromParkinglot(spotid, spot.getParkinglotId());
-        parkingspotRepo.delete(spot);
+
+        try {
+            parkingspotRepo.delete(spot);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void removeParkingspotFromParkinglot(long spotid, long lotId) {
@@ -97,14 +108,19 @@ public class DeletionService implements IDeletionService {
     }
 
     @Override
-    public void deleteBooking(long bookingnumber) {
+    public boolean deleteBooking(long bookingnumber) {
         var booking =  bookingRepo.findById(bookingnumber).orElseThrow(() -> new IllegalArgumentException("Booking not found"));
 
         var spot = booking.getSpot();
 
         resetStatusToAvailableAfterDeletingBooking(booking, spot);
 
-        bookingRepo.delete(booking);
+        try {
+            bookingRepo.delete(booking);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void resetStatusToAvailableAfterDeletingBooking(Booking booking, Parkingspot spot) {
@@ -123,7 +139,7 @@ public class DeletionService implements IDeletionService {
     }
 
     @Override
-    public void deleteParkinglot(long parkinglotid) {
+    public boolean deleteParkinglot(long parkinglotid) {
         var parkinglot = parkinglotRepo.findById(parkinglotid).orElseThrow(() -> new IllegalArgumentException("Parkinglot not found"));
 
         var spotsInLot = parkinglot.getSpots();
@@ -134,8 +150,13 @@ public class DeletionService implements IDeletionService {
             toBeDeleted.add(spot);
             deleteBookingsRelatedToSpotsToBeDeleted(spot.getId());
         }
-        parkinglotRepo.delete(parkinglot);
 
-        parkingspotRepo.deleteAll(toBeDeleted);
+        try {
+            parkinglotRepo.delete(parkinglot);
+            parkingspotRepo.deleteAll(toBeDeleted);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

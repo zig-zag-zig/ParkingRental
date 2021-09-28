@@ -53,16 +53,17 @@ public class BookingService implements IBookingService {
 
     @Override
     public List<Booking> getAllBookingsOfAUser(String username) {
-        var all = bookingRepo.findAll();
-
-        if (all.size() == 0)
-            throw new IllegalArgumentException("None found!");
+        var all = getAllBookings();
 
         var bookingsOfUser = new ArrayList<Booking>();
         for (var booking : all) {
             if (booking.getUser().getUsername().equalsIgnoreCase(username))
                 bookingsOfUser.add(booking);
         }
+
+        if (bookingsOfUser.isEmpty())
+            throw new IllegalArgumentException("None found!");
+
         return bookingsOfUser;
     }
 
@@ -158,51 +159,6 @@ public class BookingService implements IBookingService {
         //put the booking inside the ConcurrentSkipListMap bookings
         var newBooking = bookingRepo.save(booking);
         return newBooking;
-    }
-
-    @Override
-    public void writeBookingsToCsv(File out) {
-        var allBookings = bookingRepo.findAll();
-        //will be used to store the total amount of money received in total for all the bookings
-        int totalPrice = 0;
-        //will be used to store the total amount of orders
-        int amountOfBookings = 0;
-        //will be used as to contain the string that will be written to the csv
-        String joiner;
-        try (FileWriter fileWriter = new FileWriter(out)) {
-            //for loop over all the bookings
-            for (var booking : allBookings) {
-                //add all those values to the string that will be written to the csv file
-                joiner = booking.getId() + "," + booking.getUser().getId() + "," + booking.getUser().getFirstname() + "," + booking.getUser().getSurname() + "," + booking.getSpot().getId() + ",";
-                //dateAndTime is an arraylist, so loop over and print all the elements with a comma between them
-                joiner = writeDateAndTimeFromArrayList(joiner, booking);
-                //add the rest of the values of the booking to the string
-                joiner += booking.getParkinglot().getId() + "," + booking.getParkinglot().getLocation().getCity() + "," + booking.getParkinglot().getLocation().getAddress() + "," + booking.getParkinglot().getLocation().getNumber() + "," + booking.getParkinglot().getLocation().getNumber() + "," + booking.getParkinglot().getLocation().getZipcode() + "," + booking.getParkinglot().getLocation().getArea() + "," + booking.getPrice() + "\n";
-                //add the price of each booking to the total
-                totalPrice += booking.getPrice();
-                //increase the amount of bookings by one
-                amountOfBookings++;
-                //write the string to the csv
-                fileWriter.write(joiner);
-            }
-            totalBookings(totalPrice, amountOfBookings, fileWriter);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String writeDateAndTimeFromArrayList(String joiner, Booking booking) {
-        var bookingDataAndTime = booking.getDateAndTime();
-        for (int j = 0; j < bookingDataAndTime.size(); j++) {
-            joiner += bookingDataAndTime.get(j) + ",";
-        }
-        return joiner;
-    }
-
-    private void totalBookings(int totalPrice, int amountOfBookings, FileWriter fileWriter) throws IOException {
-        String joiner;
-        joiner = amountOfBookings + "," + totalPrice;
-        fileWriter.write(joiner);
     }
 
     @Override

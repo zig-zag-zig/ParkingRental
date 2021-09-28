@@ -18,7 +18,5 @@ public interface IBookingService {
 
     Booking book(long spotId, long parkinglotId, String bkdate, int hours, String username) throws Exception;
 
-    void writeBookingsToCsv(File out) throws Exception;
-
     List<Parkingspot> getOnlyAvailableParkingspotsInAParkinglot(long parkinglotid, String dateAndTime, int hours, TYPE type) throws Exception;
 }

@@ -1,4 +1,4 @@
-import {createRouter, createWebHashHistory, createWebHistory} from "vue-router";
+import {createRouter, createWebHashHistory} from "vue-router";
 import AllUsers from "../components/AllUsers";
 import CreateUser from "../components/CreateUser";
 import UserInfo from "../components/UserInfo";
