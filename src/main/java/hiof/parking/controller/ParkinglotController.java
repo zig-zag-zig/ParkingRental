@@ -122,4 +122,14 @@ public class ParkinglotController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
     }
+
+    @PutMapping("/expand/{parkinglotId}/{daysToExpandBy}")
+    public ResponseEntity<Void> expandScheduleOfAllParkingspotsInParkinglot(@PathVariable long parkinglotId, @PathVariable int daysToExpandBy) {
+        try {
+            parkinglotService.expandScheduleOfParkingspots(parkinglotId, daysToExpandBy);
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
+        }
+    }
 }
