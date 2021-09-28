@@ -1,27 +1,34 @@
 package hiof.parking.service;
 
+import hiof.parking.helpers.DateCheckerHelper;
 import hiof.parking.model.Location;
 import hiof.parking.model.Parkinglot;
 import hiof.parking.repository.ParkinglotRepo;
+import hiof.parking.repository.ParkingspotRepo;
 import hiof.parking.repository.UserRepo;
 import hiof.parking.service.interfaces.IParkinglotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import static hiof.parking.helpers.DateCheckerHelper.dateFormat;
-import static hiof.parking.helpers.LotAndSpotHelper.createScheduleForNewSpot;
+import static hiof.parking.helpers.LotAndSpotHelper.*;
 
 @Service
 public class ParkinglotService implements IParkinglotService {
     private ParkinglotRepo parkinglotRepo;
+    private ParkingspotRepo parkingspotRepo;
     private UserRepo userRepo;
 
     @Autowired
-    public ParkinglotService(ParkinglotRepo parkinglotRepo, UserRepo userRepo) {
+    public ParkinglotService(ParkinglotRepo parkinglotRepo, ParkingspotRepo parkingspotRepo, UserRepo userRepo) {
         this.parkinglotRepo = parkinglotRepo;
+        this.parkingspotRepo = parkingspotRepo;
         this.userRepo = userRepo;
     }
 
@@ -83,11 +90,29 @@ public class ParkinglotService implements IParkinglotService {
     }
 
     @Override
-    public void expandScheduleOfParkingspots(long lotId, long expandByHours) throws Exception {
+    public void expandScheduleOfParkingspots(long lotId, int daysToExandBy) throws Exception {
         var parkinglot = parkinglotRepo.findById(lotId).orElseThrow(() -> new IllegalArgumentException("Parkinglot not found"));
         var firstSpot = parkinglot.getSpots().get(0);
         var lastDateAndHourOfTheSchedule = dateFormat.parse(firstSpot.getSchedule().lastKey());
 
-        createScheduleForNewSpot(parkinglot, firstSpot, lastDateAndHourOfTheSchedule);
+        expandScheduleOfAllParkingspotsInParkinglot(parkinglot, lastDateAndHourOfTheSchedule, daysToExandBy);
+    }
+
+    private void expandScheduleOfAllParkingspotsInParkinglot(Parkinglot parkinglot, Date from, int daysToExpandBy) {
+        removeOldDatesFromSchedule(parkinglot);
+
+        SortedMap<String, Boolean> newSchedule = new ConcurrentSkipListMap<>();
+
+        long hoursToExpandBy = daysToExpandBy * 24;
+
+        for (int hours = 1; hours <= hoursToExpandBy; hours++) {
+            var dateAndTimeToAddToSchedule = DateCheckerHelper.addHoursToAnyTime(from, hours);
+            newSchedule.put(DateCheckerHelper.dateFormat.format(dateAndTimeToAddToSchedule), true);
+        }
+
+        for (var spot : parkinglot.getSpots()) {
+            spot.getSchedule().putAll(newSchedule);
+            parkingspotRepo.save(spot);
+        }
     }
 }
