@@ -46,11 +46,11 @@ export const deleteRequest = (uri) => {
         }
     }).then(response => {
         if (response.ok) {
-            alert(okMessage);
+            alert("Deletion successful!");
         } else {
             throw new Error();
         }
-    }).catch(() => alert(errorMessage));
+    }).catch(() => alert("Deletion failed!"));
 };
 
 const getCsrf = (uri) => {
