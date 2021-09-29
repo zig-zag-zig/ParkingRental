@@ -38,9 +38,14 @@ export default {
     getAll() {
       fetch('http://localhost:8080/api/user/all', {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => this.users = data)
-          .catch(error => alert('Error:', error));
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => this.users = data)
+          .catch(error => alert('No users found!'));
     },
     redirectIfNotAdmin() {
       fetch('http://localhost:8080/api/auth/admin', {
@@ -49,7 +54,7 @@ export default {
           .then(data => {
             this.isAdmin = data;
             if (this.isAdmin === false)
-              location.replace("http://localhost:8080/#/user");
+              location.replace("http://localhost:8080/#/");
           })
           .catch(error => alert(error));
     }

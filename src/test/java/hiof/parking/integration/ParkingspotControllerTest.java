@@ -148,14 +148,14 @@ public class ParkingspotControllerTest {
 
     @Test
     @WithMockUser(username = "blabla")
-    public void get_IsFound() throws Exception {
+    public void get_isOk() throws Exception {
         when(parkingspotService.getParkingspotById(1)).thenReturn(new Parkingspot());
 
         this.mockMvc
             .perform(
                 get("/api/parkingspot/get/1")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test

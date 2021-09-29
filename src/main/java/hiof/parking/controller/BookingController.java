@@ -47,7 +47,7 @@ public class BookingController {
                 var typeParsedToEnum = TYPE.valueOf(type);
                 onlyAvailable = bookingService.getOnlyAvailableParkingspotsInAParkinglot(parkinglotId, date, hours, typeParsedToEnum);
             }
-            return new ResponseEntity<>(onlyAvailable, HttpStatus.FOUND);
+            return new ResponseEntity<>(onlyAvailable, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -79,7 +79,7 @@ public class BookingController {
         try {
             if (isAllowed(bookingId)) {
                 var booking = bookingService.getBookingById(bookingId);
-                return new ResponseEntity<>(booking, HttpStatus.FOUND);
+                return new ResponseEntity<>(booking, HttpStatus.OK);
             } else
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not Authorized!");
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class BookingController {
             else
                 allBookings = bookingService.getAllBookingsOfAUser(userInfo[0]);
 
-            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
+            return new ResponseEntity<>(allBookings, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -133,7 +133,7 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getAllOfAUser(@PathVariable String username) {
         try {
             var allBookings = bookingService.getAllBookingsOfAUser(username.trim());
-            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
+            return new ResponseEntity<>(allBookings, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -144,7 +144,7 @@ public class BookingController {
     public ResponseEntity<List<Booking>> getAllOnOwnedSpots(@PathVariable String username) {
         try {
             var allBookings = bookingService.getAllBookingsOfOwnedSpots(username.trim());
-            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
+            return new ResponseEntity<>(allBookings, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -155,7 +155,7 @@ public class BookingController {
         try {
             var userInfo = getCurrentUserInfo();
             var allBookings = bookingService.getAllBookingsOfOwnedSpots(userInfo[0]);
-            return new ResponseEntity<>(allBookings, HttpStatus.FOUND);
+            return new ResponseEntity<>(allBookings, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }

@@ -1,6 +1,6 @@
 const link = "http://localhost:8080/";
 
-export const postRequest = (uri, obj) => {
+export const postRequest = (uri, obj, okMessage, errorMessage) => {
     fetch(link + uri, {
         method: 'post',
         credentials: 'include',
@@ -9,11 +9,16 @@ export const postRequest = (uri, obj) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(obj)
-    }).then(response => response)
-        .catch(error => alert('Error:', error));
+    }).then(response => {
+        if (response.ok) {
+            alert(okMessage);
+        } else {
+            throw new Error();
+        }
+    }).catch(() => alert(errorMessage));
 };
 
-export const putRequest = (uri, obj) => {
+export const putRequest = (uri, obj, okMessage, errorMessage) => {
     fetch(link + uri, {
         method: 'put',
         credentials: 'include',
@@ -22,8 +27,13 @@ export const putRequest = (uri, obj) => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(obj)
-    }).then(response => response)
-        .catch(error => alert('Error:', error));
+    }).then(response => {
+        if (response.ok) {
+            alert(okMessage);
+        } else {
+            throw new Error();
+        }
+    }).catch(() => alert(errorMessage));
 };
 
 export const deleteRequest = (uri) => {
@@ -34,8 +44,13 @@ export const deleteRequest = (uri) => {
             'X-XSRF-TOKEN': getCsrf(uri),
             'Content-Type': 'application/json'
         }
-    }).then(response => response)
-        .catch(error => alert('Error:', error));
+    }).then(response => {
+        if (response.ok) {
+            alert(okMessage);
+        } else {
+            throw new Error();
+        }
+    }).catch(() => alert(errorMessage));
 };
 
 const getCsrf = (uri) => {

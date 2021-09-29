@@ -31,7 +31,7 @@ export default {
       let typeSelect = document.getElementById("typeSelect");
       let type = typeSelect.options[typeSelect.selectedIndex].text;
       let spotInfo = [this.$route.params.id, type, this.hourlyPrice];
-      postRequest('api/parkingspot/create', spotInfo);
+      postRequest('api/parkingspot/create', spotInfo, "Successfully created the parkingspot!", "Failed to create the parkingspot!");
     }
   }
 }

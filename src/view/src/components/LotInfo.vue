@@ -121,27 +121,31 @@ export default {
     getParkinglot() {
       fetch(`http://localhost:8080/api/parkinglot/get/${this.$route.params.id}`, {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => {
-            this.parkinglot = data;
-            this.checkIfOwnerOrAdmin();
-          })
-          .catch(error => alert('Error:', error));
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => {
+        this.parkinglot = data;
+        this.checkIfOwnerOrAdmin();
+      }).catch(error => alert('Parkinglot not found!'));
     },
     updateSpot(spotId, newPrice) {
       let typeSelect = document.getElementById("typeSelect");
       let type = typeSelect.options[typeSelect.selectedIndex].text;
       let updatedInfo = [type, newPrice];
-      putRequest(`api/parkingspot/update/${spotId}`,  updatedInfo);
+      putRequest(`api/parkingspot/update/${spotId}`, updatedInfo, "Successfully updated the parkingspot!", "Failed to update the parkingspot!");
     },
     expandSchedule() {
-      putRequest(`api/parkinglot/expand/${this.parkinglot.id}/${this.expandBy}`, "")
+      putRequest(`api/parkinglot/expand/${this.parkinglot.id}/${this.expandBy}`, "", "Successfully expanded the schedule!", "Failed to expand the schedule!");
     },
     deleteSpot(spotId) {
       deleteRequest(`api/parkingspot/delete/${spotId}`);
     },
     updateLot() {
-      putRequest(`api/parkinglot/update/${this.parkinglot.id}`,  this.parkinglot.location);
+      putRequest(`api/parkinglot/update/${this.parkinglot.id}`,  this.parkinglot.location, "Successfully updated the parkinglot!", "Failed to update the parkinglot!");
     },
     deleteLot() {
       deleteRequest(`api/parkinglot/delete/${this.parkinglot.id}`);

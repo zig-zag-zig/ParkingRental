@@ -10,9 +10,9 @@
 
               <p>Bookingdates:
                 <span v-for="dates in booking.dateAndTime">
-                      {{ dates }}<span v-if="i + 1 !== booking.dateAndTime.length">, </span>
-                      <span style="display:none;">{{ i++ }}</span>
-                    </span>
+                  {{ dates }}<span v-if="i + 1 !== booking.dateAndTime.length">, </span>
+                  <span style="display:none;">{{ i++ }}</span>
+                </span>
               </p>
 
               <p>Parkinglot Location City: {{ booking.parkinglot.location.city }}</p>
@@ -50,9 +50,14 @@ export default {
       }
       fetch(path, {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => this.bookings = data)
-          .catch(error => alert('Error:', error));
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => this.bookings = data)
+          .catch(error => alert('No bookings found!'));
     }
   },
   data: () => {

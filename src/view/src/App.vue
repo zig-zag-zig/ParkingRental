@@ -26,12 +26,6 @@
       </div>
 
       <div class="navbutton" v-if="isLoggedIn === true">
-        <a class="link" :href="'http://localhost:8080/#/booking/all/ownedspots'">
-          <p>Bookings On Owned Spots</p>
-        </a>
-      </div>
-
-      <div class="navbutton" v-if="isLoggedIn === true">
         <a class="link" :href="'http://localhost:8080/logout'">
           <p>Logout</p>
         </a>
@@ -64,14 +58,18 @@ export default {
     isAuthenticated() {
       fetch('http://localhost:8080/api/auth/loggedin', {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => {
-            this.isLoggedIn = data;
-          })
-          .catch(error => {
-            if (!window.location.toString().includes("createuser"))
-              location.replace("http://localhost:8080/login")
-          });
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => {
+        this.isLoggedIn = data;
+      }).catch(error => {
+        if (!window.location.toString().includes("createuser") && !window.location.toString().includes("login"))
+          location.replace("http://localhost:8080/login")
+      });
     }
   },
   created() {

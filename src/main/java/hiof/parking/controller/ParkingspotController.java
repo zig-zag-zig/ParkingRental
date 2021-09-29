@@ -93,7 +93,7 @@ public class ParkingspotController {
     public ResponseEntity<Parkingspot> get(@PathVariable long spotId) {
         try {
             var spot = parkinspotService.getParkingspotById(spotId);
-            return new ResponseEntity<>(spot, HttpStatus.FOUND);
+            return new ResponseEntity<>(spot, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }

@@ -29,7 +29,8 @@ public class LotAndSpotHelper {
                     var now = DateCheckerHelper.dateFormat.parse(nowString);
                     if (timeFromScheduleParsed.before(now)) {
                         iterator.remove();
-                    }
+                    } else
+                        break;
                 } catch (Exception ignored) {}
             }
         }

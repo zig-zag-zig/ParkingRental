@@ -1,7 +1,6 @@
 <template>
   <div>
     <form @submit.prevent="createLot" method="post">
-
       <p>
         <label for="addressStreet">Address Street: </label><br>
         <input v-model="address" type="text" name="addressStreet" id="addressStreet" required="required">
@@ -32,9 +31,7 @@
       <p>
         <button class="btn" type="submit">Create</button>
       </p>
-
     </form>
-
   </div>
 </template>
 
@@ -53,7 +50,7 @@ export default {
   methods: {
     createLot() {
       let lotInfo = [this.city, this.address, this.number, this.zipcode, this.area];
-      postRequest("api/parkinglot/create", lotInfo);
+      postRequest("api/parkinglot/create", lotInfo, "Successfully created the parkinglot successfully!", "Failed to create the parkinglot!");
     }
   }
 }
