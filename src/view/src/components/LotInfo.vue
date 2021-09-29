@@ -29,14 +29,22 @@
       </p>
 
       <p>
-        <button @click="this.$router.push(`/lot/${parkinglot.id}/createspot`)">New Parkingspot</button>
+        <button class="btn" @click="updateLot">Update Parkinglot</button>
       </p>
 
       <p>
-        <button @click="updateLot">Update Parkinglot</button>
+        <label for="expandSchedule">Expand Schedule By Days: </label><br>
+        <input v-model="expandBy" type="number" name="expandSchedule" min="1" id="expandSchedule" oninput="validity.valid||(value='');">
+        <br>
+        <button class="btn" @click="expandSchedule(parkinglot.id)">Expand</button>
       </p>
+
       <p>
-        <button @click="deleteLot">Delete Parkinglot</button>
+        <button class="btn" @click="this.$router.push(`/lot/${parkinglot.id}/createspot`)">New Parkingspot</button>
+      </p>
+
+      <p>
+        <button class="btn" @click="deleteLot">Delete Parkinglot</button>
       </p>
     </span>
     <span v-else>
@@ -48,13 +56,15 @@
 
     <span v-if="parkinglot.spots.length > 0">
       <p>
-        <button @click="this.$router.push(`/lot/${this.parkinglot.id}/search`)" class="nav-link">Search For Spots</button>
+        <button class="btn" @click="this.$router.push(`/lot/${this.parkinglot.id}/search`)">Search For Spots</button>
       </p>
     </span>
 
     <span v-for="spot in this.parkinglot.spots">
       <span v-if="ownerOrAdmin === true">
+        <p>Spot-ID: {{ spot.id }}</p>
         <p>
+          Type:
           <select id="typeSelect">
             <option>{{spot.type}}</option>
             <span v-if="spot.type !== 'Regular'">
@@ -71,14 +81,15 @@
         </p>
         <p>
           <label for="hourlyPrice">Hourly Price: </label><br>
-          <input v-model="updatedPrice" type="number" name="hourlyPrice" min="1" id="hourlyPrice" required="required"
+          <input v-model="spot.hourlyPrice" type="number" name="hourlyPrice" min="1" id="hourlyPrice" required="required"
                  oninput="validity.valid||(value='');">
         </p>
+
         <p>
-          <button @click="updateSpot(spot.id)">Update Spot</button>
+          <button class="btn" @click="updateSpot(spot.id, spot.hourlyPrice)">Update Spot</button>
         </p>
         <p>
-          <button @click="deleteSpot(spot.id)">Delete Spot</button>
+          <button class="btn" @click="deleteSpot(spot.id)">Delete Spot</button>
         </p>
       </span>
       <span v-else>
@@ -96,7 +107,7 @@ export default {
   data: () => ({
     parkinglot: null,
     ownerOrAdmin: '',
-    updatedPrice: '',
+    expandBy: '',
   }),
   created() {
     this.getParkinglot();
@@ -110,24 +121,31 @@ export default {
     getParkinglot() {
       fetch(`http://localhost:8080/api/parkinglot/get/${this.$route.params.id}`, {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => {
-            this.parkinglot = data;
-            this.checkIfOwnerOrAdmin();
-          })
-          .catch(error => alert('Error:', error));
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => {
+        this.parkinglot = data;
+        this.checkIfOwnerOrAdmin();
+      }).catch(error => alert('Parkinglot not found!'));
     },
-    updateSpot(spotId) {
+    updateSpot(spotId, newPrice) {
       let typeSelect = document.getElementById("typeSelect");
       let type = typeSelect.options[typeSelect.selectedIndex].text;
-      let updatedInfo = [type, this.updatedPrice];
-      putRequest(`api/parkingspot/update${spotId}`,  updatedInfo);
+      let updatedInfo = [type, newPrice];
+      putRequest(`api/parkingspot/update/${spotId}`, updatedInfo, "Successfully updated the parkingspot!", "Failed to update the parkingspot!");
+    },
+    expandSchedule() {
+      putRequest(`api/parkinglot/expand/${this.parkinglot.id}/${this.expandBy}`, "", "Successfully expanded the schedule!", "Failed to expand the schedule!");
     },
     deleteSpot(spotId) {
       deleteRequest(`api/parkingspot/delete/${spotId}`);
     },
     updateLot() {
-      putRequest(`api/parkinglot/update/${this.parkinglot.id}`,  this.parkinglot.location);
+      putRequest(`api/parkinglot/update/${this.parkinglot.id}`,  this.parkinglot.location, "Successfully updated the parkinglot!", "Failed to update the parkinglot!");
     },
     deleteLot() {
       deleteRequest(`api/parkinglot/delete/${this.parkinglot.id}`);

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -51,14 +52,14 @@ public class ParkinglotControllerTest {
 
     @Test
     @WithMockUser(username = "blabla")
-    public void getAll_IsFoundWhenParkinglotsExistInDb() throws Exception {
+    public void getAll_isOkWhenParkinglotsExistInDb() throws Exception {
         when(parkinglotService.getAllParkinglots()).thenReturn(List.of(new Parkinglot()));
 
         this.mockMvc
             .perform(
                 get("/api/parkinglot/all")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -170,14 +171,14 @@ public class ParkinglotControllerTest {
 
     @Test
     @WithMockUser(username = "blabla")
-    public void getAllOfAUser_IsFoundWhenUserHasParkinglos() throws Exception {
+    public void getAllOfAUser_isOkWhenUserHasParkinglos() throws Exception {
         when(parkinglotService.getAllParkinglotsOfAUser(any())).thenReturn(List.of(new Parkinglot()));
 
         this.mockMvc
             .perform(
                 get("/api/parkinglot/all/aa")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -194,14 +195,14 @@ public class ParkinglotControllerTest {
 
     @Test
     @WithMockUser(username = "blabla")
-    public void get_IsFound() throws Exception {
+    public void get_isOk() throws Exception {
         when(parkinglotService.getParkinglotById(1)).thenReturn(new Parkinglot());
 
         this.mockMvc
             .perform(
                 get("/api/parkinglot/get/1")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -295,12 +296,63 @@ public class ParkinglotControllerTest {
             when(parkinglotService.getParkinglotById(1)).thenReturn(parkinglot);
             when(deletionService.deleteParkinglot(1)).thenReturn(true);
 
+            this.mockMvc
+                .perform(
+                    delete("/api/parkinglot/delete/1")
+                        .with(csrf())
+                )
+                .andExpect(status().isForbidden());
+        }
+    }
+
+    @Test
+    @WithMockUser(username = "blabla")
+    public void expandScheduleOfAllParkingspotsInParkinglot_NoContentWhenOk() throws Exception {
+        try (MockedStatic<AuthorizationHelper> authorizationHelperMockedStatic = Mockito.mockStatic(AuthorizationHelper.class)) {
+            authorizationHelperMockedStatic.when(() -> AuthorizationHelper.currentUserOrAdmin("User", 2, 2))
+                .thenReturn(true);
+
+            authorizationHelperMockedStatic.when(AuthorizationHelper::getCurrentUserInfo)
+                .thenReturn(new String[] {"blabla", "User"});
+
+            var user = new User();
+            user.setId(2);
+            var parkinglot = new Parkinglot();
+            parkinglot.setOwner(user);
+
             when(userService.getByUsername("blabla")).thenReturn(user);
             when(parkinglotService.getParkinglotById(1)).thenReturn(parkinglot);
 
             this.mockMvc
                 .perform(
-                    delete("/api/parkinglot/delete/1")
+                    put("/api/parkinglot/expand/1/1")
+                        .with(csrf())
+                )
+                .andExpect(status().isNoContent());
+        }
+    }
+
+    @Test
+    @WithMockUser(username = "blabla")
+    public void expandScheduleOfAllParkingspotsInParkinglot_ForbiddenWhenAuthorizationFails() throws Exception {
+        try (MockedStatic<AuthorizationHelper> authorizationHelperMockedStatic = Mockito.mockStatic(AuthorizationHelper.class)) {
+            authorizationHelperMockedStatic.when(() -> AuthorizationHelper.currentUserOrAdmin("User", 2, 2))
+                .thenReturn(false);
+
+            authorizationHelperMockedStatic.when(AuthorizationHelper::getCurrentUserInfo)
+                .thenReturn(new String[] {"blabla", "User"});
+
+            var user = new User();
+            user.setId(2);
+            var parkinglot = new Parkinglot();
+            parkinglot.setOwner(user);
+
+            when(userService.getByUsername("blabla")).thenReturn(user);
+            when(parkinglotService.getParkinglotById(1)).thenReturn(parkinglot);
+
+            this.mockMvc
+                .perform(
+                    put("/api/parkinglot/expand/1/1")
                         .with(csrf())
                 )
                 .andExpect(status().isForbidden());

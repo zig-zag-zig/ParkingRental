@@ -1,5 +1,5 @@
 <template>
-  <div class="create">
+  <div>
     <form @submit.prevent="createUser" method="post">
 
       <p>
@@ -55,7 +55,7 @@
       </p>
 
       <p>
-        <input type="submit" value="Create">
+        <button class="btn" type="submit">Create</button>
       </p>
 
     </form>
@@ -82,7 +82,7 @@ export default {
     createUser() {
       let userInfo = [this.username, this.password, this.passwordConf, this.firstname, this.lastname, this.city, this.address, this.number.toString(), this.zipcode.toString(), this.area];
 
-      postRequest("api/user/create", userInfo);
+      postRequest("api/user/create", userInfo, "Successfully created the user!", "Failed to create the user!");
     }
   }
 }

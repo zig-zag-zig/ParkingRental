@@ -97,7 +97,7 @@ public class ParkinglotController {
     public ResponseEntity<Parkinglot> get(@PathVariable long parkinglotId) {
         try {
             var parkinglot = parkinglotService.getParkinglotById(parkinglotId);
-            return new ResponseEntity<>(parkinglot, HttpStatus.FOUND);
+            return new ResponseEntity<>(parkinglot, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -107,7 +107,18 @@ public class ParkinglotController {
     public ResponseEntity<List<Parkinglot>> getAll() {
         try {
             var allParkinglots = parkinglotService.getAllParkinglots();
-            return new ResponseEntity<>(allParkinglots, HttpStatus.FOUND);
+            return new ResponseEntity<>(allParkinglots, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @GetMapping("/allcurrentuser")
+    public ResponseEntity<List<Parkinglot>> getAllOfCurrentUser() {
+        try {
+            var username = getCurrentUserInfo()[0];
+            var allParkinglots = parkinglotService.getAllParkinglotsOfAUser(username);
+            return new ResponseEntity<>(allParkinglots, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -117,9 +128,22 @@ public class ParkinglotController {
     public ResponseEntity<List<Parkinglot>> getAllOfUser(@PathVariable String username) {
         try {
             var allParkinglots = parkinglotService.getAllParkinglotsOfAUser(username);
-            return new ResponseEntity<>(allParkinglots, HttpStatus.FOUND);
+            return new ResponseEntity<>(allParkinglots, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
+        }
+    }
+
+    @PutMapping("/expand/{parkinglotId}/{daysToExpandBy}")
+    public ResponseEntity<Void> expandScheduleOfAllParkingspotsInParkinglot(@PathVariable long parkinglotId, @PathVariable int daysToExpandBy) throws Exception {
+        try {
+            if (isAllowed(parkinglotId)) {
+                parkinglotService.expandScheduleOfParkingspots(parkinglotId, daysToExpandBy);
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+            } else
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Not Authorized!");
+        } catch (Exception e) {
+            throw throwCorrectException(e);
         }
     }
 }

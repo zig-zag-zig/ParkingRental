@@ -1,17 +1,19 @@
 <template>
-  <div>
-    <h1>All Users</h1>
+  <div class="flex-wrapper">
     <span v-for="user in this.users" v-bind:key="user.id">
-      <p>Username: {{user.username}}</p>
-      <p>Firstname: {{user.firstname}}</p>
-      <p>Lastname: {{user.surname}}</p>
-      <p>Location: {{`${user.location.address} ${user.location.number}, ${user.location.zipcode} ${user.location.area}, ${user.location.city}`}}</p>
-      <p>Role: {{user.role}}</p>
+        <div class="flex-container">
+          <a class="link" :href="`http://localhost:8080/#/user/${user.username}`">
+            <p>Username: {{user.username}}</p>
+            <p>Firstname: {{user.firstname}}</p>
+            <p>Lastname: {{user.surname}}</p>
+            <p>Location: {{`${user.location.address} ${user.location.number}, ${user.location.zipcode} ${user.location.area}, ${user.location.city}`}}</p>
+            <p>Role: {{user.role}}</p>
 
-      <button @click="this.$router.push(`/user/${user.username}`)" class="nav-link">User Info</button>
-      <button @click="this.deleteUser(user.username);">Delete</button>
-      <br>
-      <br>
+            <button class="btn" @click="this.deleteUser(user.username);">Delete</button>
+            <br>
+            <br>
+          </a>
+      </div>
     </span>
   </div>
 </template>
@@ -36,9 +38,14 @@ export default {
     getAll() {
       fetch('http://localhost:8080/api/user/all', {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => this.users = data)
-          .catch(error => alert('Error:', error));
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => this.users = data)
+          .catch(error => alert('No users found!'));
     },
     redirectIfNotAdmin() {
       fetch('http://localhost:8080/api/auth/admin', {
@@ -47,7 +54,7 @@ export default {
           .then(data => {
             this.isAdmin = data;
             if (this.isAdmin === false)
-              location.replace("http://localhost:8080/#/user");
+              location.replace("http://localhost:8080/#/");
           })
           .catch(error => alert(error));
     }

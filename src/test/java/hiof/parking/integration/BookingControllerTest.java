@@ -63,20 +63,20 @@ public class BookingControllerTest {
             .perform(
                 get("/api/booking/all")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
 
     @Test
     @WithMockUser(username = "blabla")
-    public void getAllOfAUser_IsFoundWhenUserHasBookings() throws Exception {
+    public void getAllOfAUser_isOkWhenUserHasBookings() throws Exception {
         when(bookingService.getAllBookingsOfAUser(any())).thenReturn(List.of(new Booking()));
 
         this.mockMvc
             .perform(
                 get("/api/booking/all/blabla")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -103,14 +103,14 @@ public class BookingControllerTest {
 
     @Test
     @WithMockUser(authorities = "Administrator", username = "blabla")
-    public void getAllOfAUser_IsFoundWhenAdminTriesToGetBookingsOfAnotherUser() throws Exception {
+    public void getAllOfAUser_isOkWhenAdminTriesToGetBookingsOfAnotherUser() throws Exception {
         when(bookingService.getAllBookingsOfAUser(any())).thenReturn(List.of(new Booking()));
 
         this.mockMvc
             .perform(
                 get("/api/booking/all/a")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -136,26 +136,26 @@ public class BookingControllerTest {
 
     @Test
     @WithMockUser(username = "blabla")
-    public void getAllOnOwnedSpotsCurrentUser_IsFoundWhenThereAreBookingsOnUsersSpots() throws Exception {
+    public void getAllOnOwnedSpotsCurrentUser_isOkWhenThereAreBookingsOnUsersSpots() throws Exception {
         when(bookingService.getAllBookingsOfOwnedSpots(any())).thenReturn(List.of(new Booking()));
 
         this.mockMvc
             .perform(
                 get("/api/booking/bookingsOnOwnedSpots")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username = "blabla")
-    public void getAllOnOwnedSpots_IsFound() throws Exception {
+    public void getAllOnOwnedSpots_isOk() throws Exception {
         when(bookingService.getAllBookingsOfOwnedSpots(any())).thenReturn(List.of(new Booking()));
 
         this.mockMvc
             .perform(
                 get("/api/booking/bookingsOnOwnedSpots/blabla")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -184,26 +184,26 @@ public class BookingControllerTest {
 
     @Test
     @WithMockUser(authorities = "Administrator", username = "blabla")
-    public void getAllOnOwnedSpots_IsFoundWhenAdminTriesToAccessAnotherUsersData() throws Exception {
+    public void getAllOnOwnedSpots_isOkWhenAdminTriesToAccessAnotherUsersData() throws Exception {
         when(bookingService.getAllBookingsOfAUser(any())).thenReturn(List.of(new Booking()));
 
         this.mockMvc
             .perform(
                 get("/api/booking/bookingsOnOwnedSpots/aa")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(authorities = "Administrator", username = "blabla")
-    public void getOnlyAvailable_IsFoundWhenThereAreResults() throws Exception {
+    public void getOnlyAvailable_isOkWhenThereAreResults() throws Exception {
         when(bookingService.getOnlyAvailableParkingspotsInAParkinglot(1,"a", 1, TYPE.Regular)).thenReturn(List.of(new Parkingspot()));
 
         this.mockMvc
             .perform(
                 get("/api/booking/onlyavailable/1/Regular/a/1")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -220,7 +220,7 @@ public class BookingControllerTest {
 
     @Test
     @WithMockUser(authorities = "Administrator", username = "blabla")
-    public void get_IsFound() throws Exception {
+    public void get_isOk() throws Exception {
         try (MockedStatic<AuthorizationHelper> authorizationHelperMockedStatic = Mockito.mockStatic(AuthorizationHelper.class)) {
             authorizationHelperMockedStatic.when(() -> AuthorizationHelper.currentUserOrParkinglotOwnerOrAdmin("Administrator", 2, 2, 2))
                 .thenReturn(true);
@@ -244,7 +244,7 @@ public class BookingControllerTest {
                 .perform(
                     get("/api/booking/get/1")
                 )
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
         }
     }
 

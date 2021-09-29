@@ -3,7 +3,7 @@
     <h1>User Info</h1>
     <span v-if="isAdmin === true">
       <p>
-      <button @click="this.$router.push(`/user/all`)">All Users</button>
+      <button class="btn" @click="this.$router.push(`/user/all`)">All Users</button>
       </p>
     </span>
     <p>
@@ -38,8 +38,9 @@
              oninput="validity.valid||(value='');">
     </p>
 
-    <button @click="updateUser">Update</button>
-    <button @click="deleteUser">Delete</button>
+    <button class="btn" @click="updateUser">Update</button>
+    <br>
+    <button class="btn" @click="deleteUser">Delete</button>
   </div>
 
 </template>
@@ -55,7 +56,7 @@ export default {
   methods: {
     updateUser() {
       let userInfo = [this.user.firstname, this.user.surname, this.user.location.city, this.user.location.address, this.user.location.number, this.user.location.zipcode, this.user.location.area];
-      putRequest(`api/user/update/${this.user.username}`, userInfo);
+      putRequest(`api/user/update/${this.user.username}`, userInfo, "Successfully updated the user!", "Failed to update the user!");
     },
     deleteUser() {
       deleteRequest(`api/user/delete/${this.user.username}`);
@@ -77,9 +78,14 @@ export default {
 
       fetch(path, {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => this.user = data)
-          .catch(error => alert('Error:', error));
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => this.user = data)
+          .catch(error => alert('User not found!'));
     }
   },
   created() {

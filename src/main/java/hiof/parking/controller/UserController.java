@@ -84,7 +84,7 @@ public class UserController {
     public ResponseEntity<User> get(@PathVariable String username) {
         try {
             var user = userService.getByUsername(username.trim());
-            return new ResponseEntity<>(user, HttpStatus.FOUND);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -95,7 +95,7 @@ public class UserController {
         try {
             var usernameOfCurrentUser = SecurityContextHolder.getContext().getAuthentication().getName();
             var user = userService.getByUsername(usernameOfCurrentUser);
-            return new ResponseEntity<>(user, HttpStatus.FOUND);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }
@@ -106,7 +106,7 @@ public class UserController {
     public ResponseEntity<List<User>> getAll() {
         try {
             var allUsers = userService.getAllUsers();
-            return new ResponseEntity<>(allUsers, HttpStatus.FOUND);
+            return new ResponseEntity<>(allUsers, HttpStatus.OK);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
         }

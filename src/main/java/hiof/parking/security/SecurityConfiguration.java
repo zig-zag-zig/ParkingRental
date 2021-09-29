@@ -36,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .antMatchers("/api/user/create").permitAll()
                     .antMatchers("/api/**").authenticated()
             .and().formLogin()
-                .defaultSuccessUrl("/#/user", true)
+                .defaultSuccessUrl("/#/", true)
             .and().logout().invalidateHttpSession(true).deleteCookies("JSESSIONID")
             .and().rememberMe().key("donotknowwhattocallthis").tokenValiditySeconds(86400);
     }

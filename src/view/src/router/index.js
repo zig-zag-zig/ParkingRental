@@ -4,6 +4,7 @@ import CreateUser from "../components/CreateUser";
 import UserInfo from "../components/UserInfo";
 import CreateLot from "../components/CreateLot";
 import AllLots from "../components/AllLots";
+import AllLotsOfUser from "../components/AllLotsOfUser";
 import LotInfo from "../components/LotInfo";
 import CreateSpot from "../components/CreateSpot";
 import Search from "../components/Search";
@@ -34,8 +35,14 @@ const routes = [
     },
     {
         path: "/",
+        alias: "/lot",
         name: "All Parkinglots",
         component: AllLots,
+    },
+    {
+        path: "/lot/all/:username?",
+        name: "All Parkinglots Of User",
+        component: AllLotsOfUser,
     },
     {
         path: "/lot/:id",

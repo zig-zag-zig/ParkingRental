@@ -90,12 +90,15 @@ public class ParkinglotService implements IParkinglotService {
     }
 
     @Override
-    public void expandScheduleOfParkingspots(long lotId, int daysToExandBy) throws Exception {
+    public void expandScheduleOfParkingspots(long lotId, int daysToExpandBy) throws Exception {
+        if (daysToExpandBy < 1)
+            throw new IllegalArgumentException("Must expand by at least one day!");
+
         var parkinglot = parkinglotRepo.findById(lotId).orElseThrow(() -> new IllegalArgumentException("Parkinglot not found"));
         var firstSpot = parkinglot.getSpots().get(0);
         var lastDateAndHourOfTheSchedule = dateFormat.parse(firstSpot.getSchedule().lastKey());
 
-        expandScheduleOfAllParkingspotsInParkinglot(parkinglot, lastDateAndHourOfTheSchedule, daysToExandBy);
+        expandScheduleOfAllParkingspotsInParkinglot(parkinglot, lastDateAndHourOfTheSchedule, daysToExpandBy);
     }
 
     private void expandScheduleOfAllParkingspotsInParkinglot(Parkinglot parkinglot, Date from, int daysToExpandBy) {

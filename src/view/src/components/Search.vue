@@ -1,4 +1,4 @@
-<template id="search">
+<template>
   <div>
     <h2>Find Available</h2>
 
@@ -36,7 +36,7 @@
       </p>
 
       <p>
-        <input type="submit" value="Search">
+        <button class="btn" type="submit">Search</button>
       </p>
     </form>
 
@@ -45,7 +45,7 @@
       <select id="spotSelect"></select>
     </p>
 
-    <button @click="this.book">Book</button>
+    <button class="btn" @click="this.book">Book</button>
 
   </div>
 
@@ -74,13 +74,17 @@ export default {
     getLot() {
       fetch(`http://localhost:8080/api/parkinglot/get/${this.$route.params.id}`, {
         credentials: 'include'
-      }).then(response => response.json())
-          .then(data => {
-            this.parkinglot = data;
-            this.get24HoursArray();
-            this.getAllTypesArray();
-          })
-          .catch(error => alert('Error:', error));
+      }).then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error();
+        }
+      }).then(data => {
+        this.parkinglot = data;
+        this.get24HoursArray();
+        this.getAllTypesArray();
+      }).catch(error => alert('Parkinglot not found!'));
     },
     get24HoursArray() {
       for (let i = 0; i < 24; i++) {
@@ -100,17 +104,23 @@ export default {
       this.date += ` ${time}:00`;
       let type = this.selectedType.typeSelected;
       fetch(`http://localhost:8080/api/booking/onlyavailable/${this.$route.params.id}/${type}/${this.date}/${this.hours}`)
-          .then(res => res.json())
+          .then(response => {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error();
+            }
+          })
           .then(res => {
             this.spots = res;
             this.fillSelectWithSpots();
           })
-          .catch(error  => alert("Error:", error ));
+          .catch(error  => alert("Could not find any available parkingspots!"));
       },
     book() {
       let spotId = this.spotSelect.options[this.spotSelect.selectedIndex].value;
       let bookingInfo = [spotId, this.parkinglot.id, this.date, this.hours];
-      postRequest("api/booking/book", bookingInfo);
+      postRequest("api/booking/book", bookingInfo, "Successfully booked the parkingspot!", "Failed to book the parkingspot!");
     },
     fillSelectWithSpots() {
       this.spotSelect = document.getElementById('spotSelect');

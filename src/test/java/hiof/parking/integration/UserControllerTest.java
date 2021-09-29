@@ -145,7 +145,7 @@ public class UserControllerTest {
             .perform(
                 get("/api/user/get/blabla")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -169,7 +169,7 @@ public class UserControllerTest {
             .perform(
                 get("/api/user/get")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
@@ -193,7 +193,7 @@ public class UserControllerTest {
             .perform(
                 get("/api/user/all")
             )
-            .andExpect(status().isFound());
+            .andExpect(status().isOk());
     }
 
     @Test
